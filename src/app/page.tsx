@@ -72,8 +72,8 @@ export default function Editor(props: IEditor) {
 					onDoubleClick={() => startEditing()}>
 					<MarkdownEditor
 						className={isEditing() ? 'editor' : ''}
-						style={{ width: '50vw' }}
-						height={800}
+						style={{ width: '90vw' }}
+						height={600}
 						hideToolbar={!isEditing()}
 						value={content}
 						preview={previewType}

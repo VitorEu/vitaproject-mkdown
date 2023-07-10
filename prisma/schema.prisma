@@ -1,0 +1,14 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model mkdown_content {
+  id           Int     @id @default(autoincrement())
+  uuid         String  @db.VarChar(500)
+  text_content String? @db.Text
+}

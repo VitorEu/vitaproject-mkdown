@@ -1,95 +1,105 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+import '@uiw/react-md-editor/markdown-editor.css';
+import '@uiw/react-markdown-preview/markdown.css';
+import dynamic from 'next/dynamic'
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation'
+import { PreviewType } from '@uiw/react-md-editor';
+import '../style/main.css'
+import contentService from '@/service/contentService';
+import dotenv from "dotenv";
+import clientRequest from './requests/clientRequest';
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+const MarkdownEditor = dynamic(
+	() => import('@uiw/react-md-editor'),
+	{
+		ssr: true
+	}
+);
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+export interface IEditor {
+	inheritedText: string,
+	sessionId: string
+}
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+export default function Editor(props: IEditor) {
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+	const {
+		inheritedText,
+	} = props;
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+	const [content, setContent] = useState<string | undefined>(inheritedText);
+	const [previewType, setPreviewType] = useState<PreviewType>('preview');
+	const [oldContent, setOldContent] = useState<string | undefined>();
+
+	useEffect(() => {
+
+		const fetchData = async (uuid: string) => {
+			const content = await clientRequest.getContentByUUID(uuid);
+			setContent(content.text_content || undefined);
+		}
+
+		const searchParams = new URLSearchParams(window.location.search);
+		const uuid = searchParams.get('uuid');
+
+		if (uuid) fetchData(uuid);
+	}, []);
+
+	const isEditing = (): boolean => {
+		return previewType === 'edit';
+	}
+
+	const startEditing = () => {
+		setPreviewType('edit');
+		setOldContent(content);
+	}
+
+	const saveContent = () => {
+		setPreviewType('preview');
+	}
+
+	const cancelEdit = () => {
+		setPreviewType('preview');
+		setContent(oldContent);
+	}
+
+	return (
+		<main style={{ display: 'inline-block' }}>
+			<div style={{ display: 'flex', flexDirection: 'column', padding: 15 }}>
+				<button
+					style={{ backgroundColor: 'transparent', border: 0, padding: 0 }}
+					onDoubleClick={() => startEditing()}>
+					<MarkdownEditor
+						className={isEditing() ? 'editor' : ''}
+						style={{ width: '50vw' }}
+						height={800}
+						hideToolbar={!isEditing()}
+						value={content}
+						preview={previewType}
+						onChange={(value) => {
+							setContent(value)
+						}} />
+				</button>
+			</div>
+			{isEditing() &&
+				<div style={{ display: 'flex', flexDirection: 'row', padding: 15 }}>
+					<div style={{ width: '50vw' }}>
+						<button
+							className='button saveButton'
+							type='submit'
+							onClick={saveContent}>
+							Salvar
+						</button>
+						<button
+							className='button cancelButton'
+							type='submit'
+							onClick={cancelEdit}>
+							Cancelar
+						</button>
+					</div>
+				</div>
+			}
+		</main>
+	)
 }

@@ -1,0 +1,40 @@
+.button {
+    align-self: center;
+    padding: 10px 15px 10px 15px;
+    margin: -10px 20px 0px 0px;
+    border: 0;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.saveButton {
+    background-color: #3f3ffb;
+    color: white;
+    font-weight: bold;
+
+    &:hover {
+        background-color: #0e0eb9;
+    }
+}
+
+.cancelButton {
+    background-color: transparent;
+    color: #343434;
+    font-weight: bold;
+
+    &:hover {
+        background-color: #e7e7ff;
+    }
+}
+
+.editor {
+    transition: .1s;
+    
+    &:hover {
+        background-color: #fafafc;
+        color: black;
+        transition: .1s
+    }
+}

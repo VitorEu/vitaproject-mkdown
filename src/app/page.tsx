@@ -7,8 +7,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation'
 import { PreviewType } from '@uiw/react-md-editor';
 import '../style/main.css'
-import contentService from '@/service/contentService';
-import dotenv from "dotenv";
 import clientRequest from './requests/clientRequest';
 
 const MarkdownEditor = dynamic(
@@ -18,12 +16,12 @@ const MarkdownEditor = dynamic(
 	}
 );
 
-export interface IEditor {
+interface IEditor {
 	inheritedText: string,
 	sessionId: string
 }
 
-export default function Editor(props: IEditor) {
+export default function Editor(props: any) {
 
 	const {
 		inheritedText,
@@ -34,7 +32,6 @@ export default function Editor(props: IEditor) {
 	const [oldContent, setOldContent] = useState<string | undefined>();
 
 	useEffect(() => {
-
 		const fetchData = async (uuid: string) => {
 			const content = await clientRequest.getContentByUUID(uuid);
 			setContent(content.text_content || undefined);

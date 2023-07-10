@@ -30,11 +30,13 @@ export default function Editor(props: any) {
 	const [content, setContent] = useState<string | undefined>(inheritedText);
 	const [previewType, setPreviewType] = useState<PreviewType>('preview');
 	const [oldContent, setOldContent] = useState<string | undefined>();
+	const [uuid, setUuid] = useState<string>();
 
 	useEffect(() => {
 		const fetchData = async (uuid: string) => {
 			const content = await clientRequest.getContentByUUID(uuid);
 			setContent(content.text_content || undefined);
+			setUuid(uuid);
 		}
 
 		const searchParams = new URLSearchParams(window.location.search);
@@ -52,7 +54,8 @@ export default function Editor(props: any) {
 		setOldContent(content);
 	}
 
-	const saveContent = () => {
+	const saveContent = async () => {
+		await clientRequest.saveContentByUUID(content, uuid);
 		setPreviewType('preview');
 	}
 

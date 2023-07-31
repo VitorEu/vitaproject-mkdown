@@ -66,14 +66,14 @@ export default function Editor(props: any) {
 
 	return (
 		<main style={{ display: 'inline-block' }}>
-			<div style={{ display: 'flex', flexDirection: 'column', padding: 15 }}>
+			<div style={{ display: 'flex', flexDirection: 'column', padding: 0 }}>
 				<button
 					style={{ backgroundColor: 'transparent', border: 0, padding: 0 }}
 					onDoubleClick={() => startEditing()}>
 					<MarkdownEditor
-						className={isEditing() ? 'editor' : ''}
-						style={{ width: '90vw', fontFamily: "'Roboto', sans-serif" }}
-						height={600}
+						className={'editor'}
+						style={{ width: '99vw', fontFamily: "'Roboto', sans-serif" }}
+						height={470}
 						hideToolbar={!isEditing()}
 						value={content}
 						preview={previewType}
@@ -83,7 +83,7 @@ export default function Editor(props: any) {
 				</button>
 			</div>
 			{isEditing() &&
-				<div style={{ display: 'flex', flexDirection: 'row', padding: 15 }}>
+				<div style={{ display: 'flex', flexDirection: 'row', marginTop: 15 }}>
 					<div style={{ width: '50vw' }}>
 						<button
 							className='button saveButton'

@@ -8,7 +8,7 @@ interface IRequest {
 }
 
 const getContentByUUID = async(uuid: string): Promise<mkdown_content> => {
-    return (await axios.get(`https://bcf4-186-224-74-25.ngrok-free.app/editor/${uuid}`)).data
+    return (await axios.get(`http://localhost:3333/editor/${uuid}`)).data
 }
 
 const saveContentByUUID = async(content: string | undefined, uuid: string | undefined): Promise<void> => {
@@ -19,7 +19,7 @@ const saveContentByUUID = async(content: string | undefined, uuid: string | unde
         uuid: uuid
     } as mkdown_content
 
-    await axios.post(`https://bcf4-186-224-74-25.ngrok-free.app/editor`, jsonBody);
+    await axios.post(`http://localhost:3333/editor`, jsonBody);
 }
 
 const clientRequest: IRequest = {
